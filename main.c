@@ -5,6 +5,7 @@
 #include "htu21d_drv.h"
 #include "mqttclient.h"
 #include "cjson.h"
+#include "led_control.h"
 
 #define DBG_TAG "main"
 #define DBG_LVL DBG_LOG
@@ -15,7 +16,7 @@
 #define SENSOR_DEVICE_WET_NAME    "HTU21D"    /* 传感器设备名称 */
 
 #ifndef KAWAII_MQTT_SUBTOPIC
-#define KAWAII_MQTT_SUBTOPIC           "sub_crychic"
+#define KAWAII_MQTT_SUBTOPIC           "Marisa"
 #endif
 #ifndef KAWAII_MQTT_PUBTOPIC
 #define KAWAII_MQTT_PUBTOPIC           "pub_crychic"
@@ -23,6 +24,7 @@
 #define KAWAII_MQTT_CLIENTID           "crychic"
 /* 邮箱控制块 */
 static rt_mailbox_t test_mb = RT_NULL;
+static int flag = 0;
 
 static void sub_topic_handle1(void *client, message_data_t *msg) {
     (void) client;
@@ -42,6 +44,14 @@ static void sub_topic_handle1(void *client, message_data_t *msg) {
     cJSON *msg_item = cJSON_GetObjectItem(json, "msg");
     if (cJSON_IsString(msg_item) && (strcmp(msg_item->valuestring, "start") == 0)) {
         rt_kprintf("yes\n");
+        if(flag) {
+            flag = 0;
+            turn(0);
+        }
+        else {
+            flag = 1;
+            turn(1);
+        }
     }
 
     /* 释放JSON对象 */
@@ -85,7 +95,7 @@ static void mqtt_date_pub_json(mqtt_client_t *client, rt_uint16_t light_intensit
     msg.qos = QOS0;
     msg.payload = (void *)str;
 
-//    rt_kprintf("cjson:%s\n", str);
+    rt_kprintf("cjson:%s\n", str);
 
     /* 发送JSON消息 */
     mqtt_publish(client, KAWAII_MQTT_PUBTOPIC, &msg);
@@ -127,7 +137,7 @@ static void kawaii_mqtt_demo(void *parameter) {
 
     while (1) {
         if (rt_mb_recv(test_mb, &received_data, RT_WAITING_FOREVER) == RT_EOK) {
-//            rt_kprintf("thread mqtt: received data: 0x%x\n\n", received_data);
+            rt_kprintf("thread mqtt: received data: 0x%x\n\n", received_data);
             // 获取温度和湿度
             temperature = read_temp();
             humidity = read_humi();
@@ -155,6 +165,7 @@ int ka_mqtt(void) {
 MSH_CMD_EXPORT(ka_mqtt, Kawaii MQTT client test program);
 
 int main(void) {
+    init_io_port();
     int count = 1;
     htu21d_init();
     rt_err_t uwRet = RT_EOK;
