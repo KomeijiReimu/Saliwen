@@ -1,17 +1,11 @@
-
 #include <rtthread.h>
 #include <rtdevice.h>
-#include "cjson.h"
 #include <stdio.h>
 #include <stdint.h>
-#include "led_control.h"
 #include "htu21d_drv.h"
-#include "drv_stepMotor.h"
 #include "mqttclient.h"
-
-
-
-
+#include "cjson.h"
+#include "led_control.h"
 
 #define DBG_TAG "main"
 #define DBG_LVL DBG_LOG
@@ -31,7 +25,52 @@
 /* 邮箱控制块 */
 static rt_mailbox_t test_mb = RT_NULL;
 static int flag = 0;
+static rt_thread_t tid1 = RT_NULL;  // 线程指针
 
+rt_base_t LED1_PIN_NUM;
+rt_base_t LED2_PIN_NUM;
+rt_base_t LED3_PIN_NUM;
+rt_base_t LED4_PIN_NUM;
+
+
+// 初始化IO端口
+void init_io_port1() {
+    LED1_PIN_NUM = rt_pin_get("PE.0");
+    LED2_PIN_NUM = rt_pin_get("PE.1");
+    LED3_PIN_NUM = rt_pin_get("PE.2");
+    LED4_PIN_NUM = rt_pin_get("PE.3");
+    rt_pin_write(LED1_PIN_NUM, PIN_HIGH);
+    rt_pin_write(LED2_PIN_NUM, PIN_HIGH);
+    rt_pin_write(LED3_PIN_NUM, PIN_HIGH);
+    rt_pin_write(LED4_PIN_NUM, PIN_HIGH);
+    rt_pin_mode(LED1_PIN_NUM, PIN_MODE_OUTPUT);
+    rt_pin_mode(LED2_PIN_NUM, PIN_MODE_OUTPUT);
+    rt_pin_mode(LED3_PIN_NUM, PIN_MODE_OUTPUT);
+    rt_pin_mode(LED4_PIN_NUM, PIN_MODE_OUTPUT);
+}
+
+// LED流水灯线程
+static void led_thread_entry(void *parameter) {
+    while (1) {
+        rt_pin_write(LED1_PIN_NUM, PIN_LOW);
+        rt_thread_mdelay(600);
+        rt_pin_write(LED1_PIN_NUM, PIN_HIGH);
+
+        rt_pin_write(LED2_PIN_NUM, PIN_LOW);
+        rt_thread_mdelay(600);
+        rt_pin_write(LED2_PIN_NUM, PIN_HIGH);
+
+        rt_pin_write(LED3_PIN_NUM, PIN_LOW);
+        rt_thread_mdelay(600);
+        rt_pin_write(LED3_PIN_NUM, PIN_HIGH);
+
+        rt_pin_write(LED4_PIN_NUM, PIN_LOW);
+        rt_thread_mdelay(600);
+        rt_pin_write(LED4_PIN_NUM, PIN_HIGH);
+    }
+}
+
+// MQTT消息处理函数
 static void sub_topic_handle1(void *client, message_data_t *msg) {
     (void) client;
     KAWAII_MQTT_LOG_I("-----------------------------------------------------------------------------------");
@@ -45,18 +84,26 @@ static void sub_topic_handle1(void *client, message_data_t *msg) {
         KAWAII_MQTT_LOG_E("Failed to parse JSON message");
         return;
     }
-
-    /* 检查是否包含 "msg": "start" */
+    rt_thread_mdelay(2000);
+    /* 检查是否包含 "msg": "start" 或 "msg": "stop" */
     cJSON *msg_item = cJSON_GetObjectItem(json, "msg");
-    if (cJSON_IsString(msg_item) && (strcmp(msg_item->valuestring, "start") == 0)) {
-        rt_kprintf("yes\n");
-        if(flag) {
-            flag = 0;
-            turn(0);
-        }
-        else {
-            flag = 1;
-            turn(1);
+    if (cJSON_IsString(msg_item)) {
+        if (strcmp(msg_item->valuestring, "turnon") == 0) {
+            rt_kprintf("Received turnon command\n");
+            if (tid1 == RT_NULL) {
+                // 创建并启动线程1
+                tid1 = rt_thread_create("led_thread", led_thread_entry, RT_NULL, 512, 5, 10);
+                if (tid1 != RT_NULL) {
+                    rt_thread_startup(tid1);
+                }
+            }
+        } else if (strcmp(msg_item->valuestring, "turnoff") == 0) {
+            rt_kprintf("Received turnoff command\n");
+            if (tid1 != RT_NULL) {
+                // 挂起并删除线程1
+                rt_thread_delete(tid1);
+                tid1 = RT_NULL;
+            }
         }
     }
 
@@ -157,7 +204,7 @@ static void kawaii_mqtt_demo(void *parameter) {
 int ka_mqtt(void) {
     rt_thread_t tid_mqtt;
 
-    tid_mqtt = rt_thread_create("kawaii_demo", kawaii_mqtt_demo, RT_NULL, 2048, 17, 10);
+    tid_mqtt = rt_thread_create("kawaii_demo", kawaii_mqtt_demo, RT_NULL, 4096, 17, 10);
 
     if (tid_mqtt == RT_NULL) {
         return -RT_ERROR;
@@ -170,10 +217,14 @@ int ka_mqtt(void) {
 
 MSH_CMD_EXPORT(ka_mqtt, Kawaii MQTT client test program);
 
+void led(int a) {
+
+}
+
+
 int main(void) {
     init_io_port();
-    drv_stepMotor_init();
-
+    init_io_port1();
     int count = 1;
     htu21d_init();
     rt_err_t uwRet = RT_EOK;

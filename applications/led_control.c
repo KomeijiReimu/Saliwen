@@ -7,19 +7,9 @@
  * Date           Author       Notes
  * 2023-05-22     wq0453       the first version
  */
+
 #include <rtdevice.h>
 #include "led_control.h"
-
-
-#include <stdio.h>
-#include <stdint.h>
-#include <rtdevice.h>
-#include <board.h>
-#include "mqttclient.h"
-#include "drv_stepMotor.h"
-#include "cJSON.h"
-
-#include <rtdbg.h>
 
 rt_base_t LED1_PIN_NUM;
 rt_base_t LED2_PIN_NUM;
@@ -77,7 +67,6 @@ void turn(int a) {
         rt_pin_write(LED2_PIN_NUM, PIN_LOW);
         rt_pin_write(LED3_PIN_NUM, PIN_LOW);
         rt_pin_write(LED4_PIN_NUM, PIN_LOW);
-        drv_stepMotor_ctrl(1);
 
     }
     else {
@@ -85,7 +74,6 @@ void turn(int a) {
         rt_pin_write(LED2_PIN_NUM, PIN_HIGH);
         rt_pin_write(LED3_PIN_NUM, PIN_HIGH);
         rt_pin_write(LED4_PIN_NUM, PIN_HIGH);
-        drv_stepMotor_ctrl(0);
     }
 }
 void loop_led(void)
