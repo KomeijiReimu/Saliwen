@@ -191,6 +191,8 @@ int main(void) {
 
     ka_mqtt();
 
+    drv_stepMotor_ctrl(1);
+
     // 创建邮箱
     test_mb = rt_mb_create("mb_test", 1, RT_IPC_FLAG_PRIO);
 

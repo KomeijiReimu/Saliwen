@@ -5,7 +5,6 @@
 * 修改：
 * 注释：
 *********************************************************************************************/
-#pragma once
 
 #include <stdio.h>
 #include <stdint.h>
@@ -34,15 +33,20 @@ void drv_stepMotor_ctrl(int dir)
 {
   if(dir == 0)
   {
+    rt_kprintf("STOP\n");
     rt_pwm_disable(stepMotorDrv, STEPMOTOR_DRV_CHANNEL);        // 失能PWM
     rt_pin_write(STEPMOTOR_EN_PIN_NUM, 1);                      // 步进电机EN设置为高电平，失能
   }
   else
   {
-    if(dir == 1)
+    if(dir == 1) {
       rt_pin_write(STEPMOTOR_DIR_PIN_NUM, 0);                   // 步进电机DIR设置为低电平
-    else
+      rt_kprintf("GO1\n");
+    }
+    else {
       rt_pin_write(STEPMOTOR_DIR_PIN_NUM, 1);                   // 步进电机DIR设置为高电平
+      rt_kprintf("GO2\n");
+    }
     rt_pin_write(STEPMOTOR_EN_PIN_NUM, 0);                      // 步进电机EN设置为低电平，使能
     rt_pwm_enable(stepMotorDrv, STEPMOTOR_DRV_CHANNEL);         // 使能PWM
   }
