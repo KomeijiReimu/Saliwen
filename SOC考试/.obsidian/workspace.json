@@ -1,0 +1,169 @@
+{
+  "main": {
+    "id": "0de7c63e0f792ac9",
+    "type": "split",
+    "children": [
+      {
+        "id": "9c8e40a180e3f96e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b35ed23159e2360d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "备忘录.md",
+                "mode": "source",
+                "backlinks": false,
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "50d000e212f5659b",
+    "type": "split",
+    "children": [
+      {
+        "id": "ed8803e16b209854",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "45171308f6979e6f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "103240f99642f8fc",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8e5d9a6f0a462ed0",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5891ed718dc738f8",
+    "type": "split",
+    "children": [
+      {
+        "id": "937b79ff7bd12cb6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c99e25706f0598c4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "备忘录.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d18976ffe1453272",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "备忘录.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "73376e1b6a1cf24e",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "142436c4455a90ad",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "备忘录.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "b35ed23159e2360d",
+  "lastOpenFiles": [
+    "备忘录.md",
+    "attachments/未命名",
+    "attachments/1262_1.jpg",
+    "刷题备忘录.md",
+    "attachments/4656_1.png",
+    "attachments",
+    "i/1262_1.jpg.md",
+    "i.md",
+    "未命名/未命名.md",
+    "2024-06-25.md",
+    "未命名",
+    "attachments/Pasted image 20240623103821.png",
+    "2024-06-23.md",
+    "未命名.canvas",
+    "Pasted image 20240621140204.png"
+  ]
+}
