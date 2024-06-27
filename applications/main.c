@@ -52,21 +52,25 @@ void init_io_port1() {
 // LED流水灯线程
 static void led_thread_entry(void *parameter) {
     while (1) {
-        rt_pin_write(LED1_PIN_NUM, PIN_LOW);
-        rt_thread_mdelay(600);
-        rt_pin_write(LED1_PIN_NUM, PIN_HIGH);
+        if (flag == 1) {
+            rt_pin_write(LED1_PIN_NUM, PIN_LOW);
+            rt_thread_mdelay(600);
+            rt_pin_write(LED1_PIN_NUM, PIN_HIGH);
 
-        rt_pin_write(LED2_PIN_NUM, PIN_LOW);
-        rt_thread_mdelay(600);
-        rt_pin_write(LED2_PIN_NUM, PIN_HIGH);
+            rt_pin_write(LED2_PIN_NUM, PIN_LOW);
+            rt_thread_mdelay(600);
+            rt_pin_write(LED2_PIN_NUM, PIN_HIGH);
 
-        rt_pin_write(LED3_PIN_NUM, PIN_LOW);
-        rt_thread_mdelay(600);
-        rt_pin_write(LED3_PIN_NUM, PIN_HIGH);
+            rt_pin_write(LED3_PIN_NUM, PIN_LOW);
+            rt_thread_mdelay(600);
+            rt_pin_write(LED3_PIN_NUM, PIN_HIGH);
 
-        rt_pin_write(LED4_PIN_NUM, PIN_LOW);
-        rt_thread_mdelay(600);
-        rt_pin_write(LED4_PIN_NUM, PIN_HIGH);
+            rt_pin_write(LED4_PIN_NUM, PIN_LOW);
+            rt_thread_mdelay(600);
+            rt_pin_write(LED4_PIN_NUM, PIN_HIGH);
+        } else {
+            rt_thread_mdelay(100); // 避免占用CPU
+        }
     }
 }
 
@@ -85,25 +89,15 @@ static void sub_topic_handle1(void *client, message_data_t *msg) {
         return;
     }
     rt_thread_mdelay(2000);
-    /* 检查是否包含 "msg": "start" 或 "msg": "stop" */
+    /* 检查是否包含 "msg": "turnon" 或 "msg": "turnoff" */
     cJSON *msg_item = cJSON_GetObjectItem(json, "msg");
     if (cJSON_IsString(msg_item)) {
         if (strcmp(msg_item->valuestring, "turnon") == 0) {
             rt_kprintf("Received turnon command\n");
-            if (tid1 == RT_NULL) {
-                // 创建并启动线程1
-                tid1 = rt_thread_create("led_thread", led_thread_entry, RT_NULL, 512, 5, 10);
-                if (tid1 != RT_NULL) {
-                    rt_thread_startup(tid1);
-                }
-            }
+            flag = 1; // 打开LED控制
         } else if (strcmp(msg_item->valuestring, "turnoff") == 0) {
             rt_kprintf("Received turnoff command\n");
-            if (tid1 != RT_NULL) {
-                // 挂起并删除线程1
-                rt_thread_delete(tid1);
-                tid1 = RT_NULL;
-            }
+            flag = 0; // 关闭LED控制
         }
     }
 
@@ -212,6 +206,12 @@ int ka_mqtt(void) {
 
     rt_thread_startup(tid_mqtt);
 
+    // 创建并启动LED控制线程
+    tid1 = rt_thread_create("led_thread", led_thread_entry, RT_NULL, 512, 5, 10);
+    if (tid1 != RT_NULL) {
+        rt_thread_startup(tid1);
+    }
+
     return RT_EOK;
 }
 
@@ -220,7 +220,6 @@ MSH_CMD_EXPORT(ka_mqtt, Kawaii MQTT client test program);
 void led(int a) {
 
 }
-
 
 int main(void) {
     init_io_port();
