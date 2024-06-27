@@ -169,6 +169,8 @@ extern "C"
 /*#define BSP_USING_PWM1*/
 /*#define BSP_USING_PWM2*/
 /*#define BSP_USING_PWM3*/
+#define BSP_USING_PWM4
+#define BSP_USING_PWM4_CH1
 
 /*-------------------------- PWM CONFIG END --------------------------*/
 
@@ -188,9 +190,6 @@ extern "C"
  *                 such as     #define HAL_ADC_MODULE_ENABLED
  *
  */
-
-#define BSP_USING_PWM4
-#define BSP_USING_PWM4_CH1
 
 /*#define BSP_USING_ADC1*/
 /*#define BSP_USING_ADC2*/
@@ -240,8 +239,6 @@ extern "C"
 /*-------------------------- HAREWARE TIMER CONFIG END --------------------------*/
 
 /*-------------------------- RTC CONFIG BEGIN --------------------------*/
-
-
 
 /** if you want to use rtc(hardware) you can use the following instructions.
  *

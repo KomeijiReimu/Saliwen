@@ -1,11 +1,17 @@
+
 #include <rtthread.h>
 #include <rtdevice.h>
+#include "cjson.h"
 #include <stdio.h>
 #include <stdint.h>
-#include "htu21d_drv.h"
-#include "mqttclient.h"
-#include "cjson.h"
 #include "led_control.h"
+#include "htu21d_drv.h"
+#include "drv_stepMotor.h"
+#include "mqttclient.h"
+
+
+
+
 
 #define DBG_TAG "main"
 #define DBG_LVL DBG_LOG
@@ -166,6 +172,8 @@ MSH_CMD_EXPORT(ka_mqtt, Kawaii MQTT client test program);
 
 int main(void) {
     init_io_port();
+    drv_stepMotor_init();
+
     int count = 1;
     htu21d_init();
     rt_err_t uwRet = RT_EOK;
