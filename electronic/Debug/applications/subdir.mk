@@ -6,6 +6,7 @@
 C_SRCS += \
 ../applications/cjson.c \
 ../applications/drv_stepMotor.c \
+../applications/fbm320_drv.c \
 ../applications/htu21d_drv.c \
 ../applications/led_control.c \
 ../applications/main.c 
@@ -13,6 +14,7 @@ C_SRCS += \
 OBJS += \
 ./applications/cjson.o \
 ./applications/drv_stepMotor.o \
+./applications/fbm320_drv.o \
 ./applications/htu21d_drv.o \
 ./applications/led_control.o \
 ./applications/main.o 
@@ -20,6 +22,7 @@ OBJS += \
 C_DEPS += \
 ./applications/cjson.d \
 ./applications/drv_stepMotor.d \
+./applications/fbm320_drv.d \
 ./applications/htu21d_drv.d \
 ./applications/led_control.d \
 ./applications/main.d 

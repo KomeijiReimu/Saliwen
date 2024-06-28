@@ -55,6 +55,8 @@ applications/main.o: ../applications/main.c \
  D:\RT-ThreadStudio\workspace\electronic\rt-thread\include/rthw.h \
  D:\RT-ThreadStudio\workspace\electronic\packages\kawaii-mqtt-latest\common\log/format.h \
  D:\RT-ThreadStudio\workspace\electronic\packages\kawaii-mqtt-latest\common\log/fifo.h \
+ ../applications/fbm320_drv.h \
+ D:\RT-ThreadStudio\workspace\electronic\rt-thread\components\drivers\include/drivers/i2c.h \
  D:\RT-ThreadStudio\workspace\electronic\rt-thread\include/rtdbg.h
 
 D:\RT-ThreadStudio\workspace\electronic\rtconfig_preinc.h:
@@ -170,5 +172,9 @@ D:\RT-ThreadStudio\workspace\electronic\rt-thread\include/rthw.h:
 D:\RT-ThreadStudio\workspace\electronic\packages\kawaii-mqtt-latest\common\log/format.h:
 
 D:\RT-ThreadStudio\workspace\electronic\packages\kawaii-mqtt-latest\common\log/fifo.h:
+
+../applications/fbm320_drv.h:
+
+D:\RT-ThreadStudio\workspace\electronic\rt-thread\components\drivers\include/drivers/i2c.h:
 
 D:\RT-ThreadStudio\workspace\electronic\rt-thread\include/rtdbg.h:
