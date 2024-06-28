@@ -62,34 +62,42 @@ void on_debounce_timer(void *parameter) {
 }
 
 void on_clap_space_timer(void *parameter) {
-
+    // 标志变量，表示拍手间隔定时器已超时
     flag_clap_timer = 1;
 
-
+    // 输出日志，表明1秒拍手间隔定时器超时
     rt_kprintf(">>> 1s clap_timer_timeout\n");
 
-
+    // 如果拍手次数为2次
     if (cnt == 2) {
-
+        // 将当前状态设置为LED空闲状态
         curr_state = LED_IDLE;
+
+        // 根据当前LED状态切换LED状态
         if (flag_led_status) {
+            // 如果当前LED状态为打开，则关闭LED
             flag_led_status = 0x0;
             control_led(0xf);
             rt_kprintf("shift\n");
         } else {
+            // 如果当前LED状态为关闭，则打开LED
             flag_led_status = 0xf;
             control_led(0x0);
             rt_kprintf("shift\n");
         }
         rt_kprintf(">>>>>>>  CLAP -> IDLE\n");
+
+        // 标志变量，表示拍手事件已完成
         flag_clap_send = 1;
     } else {
+        // 如果拍手次数不为2次，则仅将当前状态设置为LED空闲状态
         curr_state = LED_IDLE;
         rt_kprintf("CLAP -> IDLE\n");
     }
+    // 重置拍手计数
     cnt = 0;
-
 }
+
 
 void timer_init(void) {
     clap_space_timer = rt_timer_create("clap_space_timer", // 定时器名称
@@ -149,8 +157,6 @@ void init_int(void) {
     rt_pin_irq_enable(rt_pin_get("PB.12"), PIN_IRQ_ENABLE);
 
     rt_pin_mode(rt_pin_get("PE.5"), PIN_MODE_OUTPUT);
-    // rt_pin_attach_irq(rt_pin_get("PE.5"), PIN_IRQ_MODE_FALLING, on_key1_clicked, RT_NULL);
-    // rt_pin_irq_enable(rt_pin_get("PE.5"), PIN_IRQ_ENABLE);
 
 }
 
@@ -175,18 +181,21 @@ static void sub_topic_handle1(void *client, message_data_t *msg) {
         return;
     }
 
-    /* 检查是否包含 "lt" 和 "tmp" */
+    /* 检查是否包含以下类 */
     cJSON *lt_item = cJSON_GetObjectItem(json, "lt");
     cJSON *tmp_item = cJSON_GetObjectItem(json, "tmp");
     cJSON *start_off = cJSON_GetObjectItem(json, "msg");
     cJSON *step = cJSON_GetObjectItem(json, "step");
 
+    // 开关阈值
     if (cJSON_IsString(start_off) && (strcmp(start_off->valuestring, "start") == 0)) {
         flag_arr = 1;
     }
     if (cJSON_IsString(start_off) && (strcmp(start_off->valuestring, "stop") == 0)) {
         flag_arr = 0;
     }
+
+    // 步进电机
     if (cJSON_IsString(step) && (strcmp(step->valuestring, "stop") == 0)) {
         rt_kprintf("stop!!\n");
         drv_stepMotor_ctrl(0);
@@ -196,6 +205,7 @@ static void sub_topic_handle1(void *client, message_data_t *msg) {
         drv_stepMotor_ctrl(1);
     }
 
+    // 获取阈值
     if (cJSON_IsNumber(lt_item) && cJSON_IsNumber(tmp_item)) {
         lt_arr = lt_item->valueint;
         tmp_arr = (float) tmp_item->valuedouble;
@@ -337,7 +347,6 @@ int main(void) {
         rt_kprintf("FBM320 initialization successful!\n");
     }
 
-    int count = 1;
     htu21d_init();
     rt_err_t uwRet = RT_EOK;
     struct rt_sensor_data sensor_data1;
@@ -385,14 +394,17 @@ int main(void) {
         } else {
             rt_kprintf("MAIL_SEND_FAILURE\n");
         }
+        // 阈值功能开关
         if (flag_arr == 1) {
+            // 风扇
             if (tmp >= tmp_arr) {
                 fan(1);
             } else {
                 fan(0);
             }
 
-            if (lt >= lt_arr) {
+            // LED
+            if (lt <= lt_arr) {
                 turn(1);
             } else {
                 turn(0);
